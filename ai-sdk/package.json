@@ -1,0 +1,8 @@
+{
+  "name": "pyai-ai-sdk-example",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "test": "node --test test/*.test.mjs", "start": "node main.mjs" },
+  "dependencies": { "ai": "7.0.153", "@ai-sdk/openai": "4.0.102" }
+}

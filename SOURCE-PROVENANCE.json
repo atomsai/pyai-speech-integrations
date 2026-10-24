@@ -1,0 +1,18 @@
+[
+  {
+    "package": "livekit-plugins-pyai",
+    "version": "0.1.2",
+    "url": "https://files.pythonhosted.org/packages/66/63/bd782e10695e32c6a67c0497aa4d292b3857b61a817ed76970ae2bd3b753/livekit_plugins_pyai-0.1.2.tar.gz",
+    "sha256": "a9e3148f6b055869c7513fb7a51810eb3c5dccfb4c092e210a74b3fb0aec035d",
+    "files": 15,
+    "source": "Public PyPI source distribution; no private monorepo runtime code copied"
+  },
+  {
+    "package": "pipecat-pyai",
+    "version": "0.1.3",
+    "url": "https://files.pythonhosted.org/packages/76/b1/e001cadb041c9a5527e8f4a5984188e40dcb33122b69b0d510d543ffb068/pipecat_pyai-0.1.3.tar.gz",
+    "sha256": "87591c991227e6fdf41a2360899a8c51ac71d65d037d92431643f93f0dc473f9",
+    "files": 14,
+    "source": "Public PyPI source distribution; no private monorepo runtime code copied"
+  }
+]
