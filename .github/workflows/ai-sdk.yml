@@ -1,0 +1,22 @@
+name: AI SDK example
+on:
+  push:
+    paths: ['ai-sdk/**', '.github/workflows/ai-sdk.yml']
+  pull_request:
+    paths: ['ai-sdk/**', '.github/workflows/ai-sdk.yml']
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ai-sdk/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: ai-sdk
+      - run: npm test
+        working-directory: ai-sdk

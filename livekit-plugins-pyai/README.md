@@ -44,7 +44,7 @@ distribution includes `examples/agent.py`; install
 | `api_key` | `$PYAI_API_KEY` | opaque PyAI key |
 | `base_url` | `https://api.pyai.com` | API base |
 | `model` | `pyai-hear` | STT model |
-| `language` | omitted (automatic) | Optional explicit ISO-639-1 hint |
+| `language` | omitted (automatic) | Optional supported language code |
 | `sample_rate` | `16000` | inbound frames are resampled to this |
 
 Streams audio to the PyAI Hear socket and emits LiveKit `INTERIM_TRANSCRIPT`
@@ -62,7 +62,8 @@ A batch `recognize()` path uses the sync transcription endpoint.
 | `sample_rate` | `24000` | output PCM rate |
 
 Requests `response_format: pcm` at the session sample rate and streams the raw
-PCM straight into the agent's audio output (low time-to-first-byte).
+PCM into the agent's audio output as chunks arrive. End-to-end latency also
+depends on your network, selected voice, LLM and turn policy.
 
 ## Notes
 
