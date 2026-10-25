@@ -52,6 +52,13 @@ of equal measured quality for every voice, accent or language.
 `npm test` exercises the actual AI SDK interfaces against controlled HTTP responses:
 endpoint, authorization, model, file upload, returned audio/text and no duplicate
 submission after errors. It does not call production or establish audio quality.
+A bounded live check on October 25, 2026 used this helper for one Speak → Hear
+round trip: a 2.48-second WAV (119,084 bytes) was transcribed correctly as
+“Hello, your voice integration is ready.” Both requests returned HTTP 200 with
+no retries. Complete-response times were 1,954 ms for Speak and 1,464 ms for
+Hear. This one English sample is integration evidence, not a first-audio latency,
+percentile, multilingual-quality or capacity benchmark.
+
 The example disables automatic retries to avoid an uncertain billed submission
 being repeated. Handle errors and retry decisions in your application.
 

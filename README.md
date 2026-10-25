@@ -7,7 +7,7 @@ and voice agents you already build. Keep your LLM, tools, transport and turn pol
 |---|---|---|
 | LiveKit Agents, Python | [LiveKit plugin](livekit-plugins-pyai/) | `pip install livekit-plugins-pyai==0.1.2` |
 | Pipecat, Python | [Pipecat services](pipecat-pyai/) | `pip install pipecat-pyai==0.1.3` |
-| AI SDK 7, Node.js | [Speech and transcription example](ai-sdk/) | Direct PyAI API integration; six offline contract tests passed |
+| AI SDK 7, Node.js | [Speech and transcription example](ai-sdk/) | Direct PyAI API integration; offline contracts and live Speak → Hear round trip passed |
 
 ## Reach people in their language
 
@@ -50,3 +50,9 @@ failure handling using controlled HTTP responses. These are not live acoustic
 tests. Existing Python release checks are distinct from a fresh end-to-end
 conversation test on a new framework version. We do not claim a latency SLA,
 language-wide accuracy score or production capacity from a short smoke test.
+
+On October 25, 2026, the AI SDK helper completed a live round trip with exactly
+two requests and no retries: a 2.48-second WAV was transcribed correctly as
+“Hello, your voice integration is ready.” Full-response times were 1,954 ms for
+Speak and 1,464 ms for Hear. This single English sample verifies integration;
+it does not establish first-audio latency, percentiles or capacity.
