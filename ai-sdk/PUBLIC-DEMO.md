@@ -1,8 +1,8 @@
 # Public speech pilot
 
-`PUBLIC_DEMO=1` enables a no-login product guide using Hear and Speak. It requires
+`PUBLIC_DEMO=true` enables a no-login product guide using Hear and Speak. It requires
 `SESSION_SECRET` (32+ random characters), `DEMO_BUCKET` (private Cloud Storage),
-`PYAI_API_KEY`, and `APP_ORIGIN` (the exact HTTPS deployment origin). Optional
+`PYAI_API_KEY`, and `PUBLIC_ORIGIN` (the exact HTTPS deployment origin). Optional
 `REFERRAL_CODE` is a server-created PyAI campaign code. Never include keys in browser assets.
 
 Use a dedicated runtime identity, with access only to the two demo secrets and
