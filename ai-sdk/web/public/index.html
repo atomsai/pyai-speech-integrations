@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PyAI · Give your app a voice</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="https://pyai.com">● PyAI</a
+      ><a href="https://github.com/atomsai/pyai-speech-integrations"
+        >Get the source ↗</a
+      >
+    </header>
+    <main>
+      <section class="intro">
+        <p class="eyebrow">HEAR → ANSWER → SPEAK</p>
+        <h1>Your app.<br />A little more human.</h1>
+        <p class="lead">
+          Ask a question. Hear the answer. Keep the tools and language model you
+          already love.
+        </p>
+        <div class="tags">
+          <span>AI SDK</span><span>LiveKit</span><span>Pipecat</span>
+        </div>
+        <p class="fine" id="mode">
+          This reference app uses a small PyAI product guide by default. Its
+          answers are scripted; Hear and Speak process real audio. You can
+          connect your own language model on the server.
+        </p>
+      </section>
+      <section class="card" aria-label="Voice chatbot">
+        <div class="card-title">
+          <span class="dot"></span><strong>Meet your voice guide</strong
+          ><span class="pill">Demo</span>
+        </div>
+        <p>Ask about pricing, languages, privacy or getting started.</p>
+        <form id="login">
+          <label for="code">Demo access code</label>
+          <div class="row">
+            <input
+              id="code"
+              type="password"
+              autocomplete="off"
+              required
+              placeholder="Provided by your demo host"
+            /><button>Connect</button>
+          </div>
+        </form>
+        <div id="chat" hidden>
+          <div id="messages" role="log" aria-live="polite"></div>
+          <div class="examples">
+            <button type="button" data-prompt="What does it cost?">
+              What does it cost?</button
+            ><button type="button" data-prompt="How do I integrate PyAI?">
+              How do I start?
+            </button>
+          </div>
+          <form id="question">
+            <label for="text">Your question</label>
+            <div class="row">
+              <input
+                id="text"
+                maxlength="2000"
+                placeholder="Type a question or use your microphone"
+                required
+              /><button id="send">Send</button>
+            </div>
+          </form>
+          <div class="record-row">
+            <button id="record" type="button">● Record a question</button
+            ><span>Up to 15 seconds</span
+            ><button id="stop" type="button" hidden>Stop playback</button>
+          </div>
+          <audio id="player" controls hidden></audio>
+        </div>
+        <p id="status" role="status">Connect to try the demo.</p>
+        <p class="fine">
+          Microphone audio goes to PyAI for transcription. Questions and replies
+          stay in this page and are sent to the configured providers; this app
+          does not save them. It records session-based success and error events.
+          <a href="https://pyai.com/legal/privacy">PyAI privacy</a>
+        </p>
+      </section>
+      <section class="next">
+        <div>
+          <h2>Make it yours.</h2>
+          <p>
+            Build speech into your own workflow. Your API key stays on your
+            server.
+          </p>
+        </div>
+        <a
+          id="signup"
+          class="button"
+          href="https://console.pyai.com/?utm_source=voice-reference&amp;utm_medium=demo&amp;utm_campaign=speech-activation"
+          target="_blank"
+          rel="noopener"
+          >Create your PyAI account ↗</a
+        >
+      </section>
+      <p class="pricing">
+        Hear: $0.001 per started input minute per nonempty synchronous request.
+        Speak: $0.04 per generated minute.
+        <a
+          id="pricing"
+          href="https://pyai.com/pricing"
+          target="_blank"
+          rel="noopener"
+          >Pricing details ↗</a
+        >
+      </p>
+    </main>
+    <footer>Built with PyAI Hear + Speak · Direct PyAI integration</footer>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

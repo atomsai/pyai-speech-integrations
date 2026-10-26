@@ -25,6 +25,7 @@ from pipecat.frames.frames import (
     VADUserStoppedSpeakingFrame,
 )
 from pipecat.services.stt_service import WebsocketSTTService
+from pipecat.services.settings import STTSettings
 from pipecat.utils.time import time_now_iso8601
 from pyai import PyAI
 
@@ -37,7 +38,6 @@ from ._utils import hear_stream_url, transcript_kind
 # safe to select. Defined here rather than imported from pyai-sdk: this adapter
 # is installed against whatever SDK version the user already has.
 REALTIME_SUBPROTOCOL_MARKER = "pyai.v1"
-
 
 
 class PyAISTTService(WebsocketSTTService):
@@ -53,10 +53,16 @@ class PyAISTTService(WebsocketSTTService):
         sample_rate: Optional[int] = None,
         **kwargs,
     ) -> None:
-        super().__init__(sample_rate=sample_rate, **kwargs)
+        super().__init__(
+            sample_rate=sample_rate,
+            settings=STTSettings(model=model, language=language or None),
+            **kwargs,
+        )
         key = api_key or os.environ.get("PYAI_API_KEY", "")
         if not key:
-            raise ValueError("A PyAI API key is required (pass api_key= or set PYAI_API_KEY).")
+            raise ValueError(
+                "A PyAI API key is required (pass api_key= or set PYAI_API_KEY)."
+            )
         # Reuse the official SDK for the base URL + the WS subprotocol helper.
         self._client = PyAI(api_key=key, base_url=base_url)
         self._model_name = model
@@ -86,7 +92,9 @@ class PyAISTTService(WebsocketSTTService):
         await super()._connect()
         await self._connect_websocket()
         if self._websocket and self._receive_task is None:
-            self._receive_task = self.create_task(self._receive_task_handler(self._report_error))
+            self._receive_task = self.create_task(
+                self._receive_task_handler(self._report_error)
+            )
 
     async def _disconnect(self) -> None:
         await super()._disconnect()
@@ -152,15 +160,15 @@ class PyAISTTService(WebsocketSTTService):
                         self._abandon_pending_final(canonical_attempt=False)
                         raise
                     continue
-                await self.push_error_frame(
-                    ErrorFrame("PyAI Hear stream error.")
-                )
+                await self.push_error_frame(ErrorFrame("PyAI Hear stream error."))
                 continue
 
             kind = transcript_kind(str(data.get("type", "")))
             text = (data.get("text") or "").strip()
             if kind == "final" and data.get("endpoint_reason") in (
-                None, "commit", "client_commit"
+                None,
+                "commit",
+                "client_commit",
             ):
                 # Automatic engine/turn-detector finals still deliver their
                 # words, but cannot acknowledge a later manual VAD commit.
@@ -227,9 +235,7 @@ class PyAISTTService(WebsocketSTTService):
             self._finals_drained.set()
 
     def _complete_pending_final(self) -> None:
-        self._canonical_commits_pending = max(
-            0, self._canonical_commits_pending - 1
-        )
+        self._canonical_commits_pending = max(0, self._canonical_commits_pending - 1)
         self._finals_pending = max(0, self._finals_pending - 1)
         if self._finals_pending == 0:
             self._finals_drained.set()

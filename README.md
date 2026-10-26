@@ -27,6 +27,11 @@ telephony and hosting costs are separate. [Current pricing](https://pyai.com/pri
 Customer inputs and outputs are not used for shared/general model training by
 default. This is separate from retention; [read the privacy policy](https://pyai.com/legal/privacy).
 
+## Try a complete app
+
+- [Browser voice chatbot and activation report](ai-sdk/web/README.md) — microphone/text input, spoken answers, private event logs and bounded demo usage.
+- [Runnable LiveKit and Pipecat demos](demos/README.md) — pinned framework versions and a repeatable conversation/interruption checklist.
+
 ## Start building
 
 Get a key at [PyAI Console](https://console.pyai.com), select a voice, and follow
@@ -39,13 +44,13 @@ Vercel AI Gateway/Hugging Face provider approval is implied.
 
 ## Source and verification
 
-The Python directories mirror the already public Apache-2.0 PyPI source releases.
+The Python directories originate from the public Apache-2.0 PyPI source releases.
 Their archive URLs and verified SHA-256 hashes are in [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json).
-README language notes have been corrected; Python runtime code is unchanged.
+The Pipecat source now includes a 0.1.4 candidate for Pipecat 1.14 settings and lifecycle compatibility; install the local source using the demo requirements. This candidate is not yet a PyPI release.
 Each package retains its license and release history. The AI SDK example is
 Apache-2.0 under the adjacent LICENSE file.
 
-Six AI SDK tests cover the actual SDK interface, request/response contracts and
+AI SDK and reference-app tests cover the actual SDK interface, request/response contracts and
 failure handling using controlled HTTP responses. These are not live acoustic
 tests. Existing Python release checks are distinct from a fresh end-to-end
 conversation test on a new framework version. We do not claim a latency SLA,

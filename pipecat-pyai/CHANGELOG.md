@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 — unreleased
+
+- Initialize STT model and language settings explicitly for Pipecat 1.14.
+- Use public audio-context completion signals in pipeline tests.
+- Require Pipecat 1.14 or newer for this source candidate.
+
 ## 0.1.3 — 2026-09-24
 
 - Preserve pending speech commits when an automatic transcript final arrives.
