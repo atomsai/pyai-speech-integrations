@@ -34,7 +34,7 @@ export function guideReply(text) {
     return "Hear supports 29 recognition languages. Speak offers 200 stock voices across 17 language groups in the October 25 catalog. Test your own accents and terminology before going live.";
   if (/train|privacy|retain/i.test(text))
     return "PyAI does not use customer inputs and outputs for shared model training by default. That is separate from retention. Please review the privacy policy for details.";
-  if (/integrat|start|build|livekit|pipecat|sdk/i.test(text))
+  if (/integrat|start|build|live\s?kit|pipecat|sdk/i.test(text))
     return "Start with the PyAI speech integrations repository. Choose the AI SDK, LiveKit, or Pipecat example, create a PyAI key, and keep it on your server. Your existing language model can stay the same.";
   return "I am the PyAI product guide. Ask me about pricing, supported languages, privacy, or adding Hear and Speak to your app.";
 }
@@ -302,7 +302,7 @@ export function createVoiceServer({
           throw new Error("Invalid answer");
         await event(session, "answer_succeeded", { turn });
         stage = "speak";
-        const speech = await audio.speak(reply, {
+        const speech = await audio.speak(reply.replace(/\bLiveKit\b/g, "Live Kit"), {
           abortSignal: controller.signal,
         });
         const bytes = speech.audio.uint8Array;
