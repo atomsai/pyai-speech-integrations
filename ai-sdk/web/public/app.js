@@ -137,16 +137,22 @@ function wav(samples) {
   return new Uint8Array(buffer);
 }
 $("record").addEventListener("click", async () => {
+  if (busy) return;
   if (recording) {
-    recording.stop();
+    if (recording.state === "recording") recording.stop();
     return;
   }
   stopAudio();
   let stream;
   try {
+    busy = true;
+    $("record").disabled = true;
+    $("send").disabled = true;
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
     recording = recorder;
+    busy = false;
+    $("record").disabled = false;
     const chunks = [];
     recorder.ondataavailable = (e) => chunks.push(e.data);
     $("record").textContent = "■ Finish recording";
@@ -158,9 +164,7 @@ $("record").addEventListener("click", async () => {
     recorder.onstop = async () => {
       clearTimeout(timer);
       stream.getTracks().forEach((t) => t.stop());
-      recording = null;
       $("record").textContent = "● Record a question";
-      $("send").disabled = false;
       let ctx;
       try {
         ctx = new AudioContext();
@@ -179,10 +183,13 @@ $("record").addEventListener("click", async () => {
         let binary = "";
         for (let i = 0; i < bytes.length; i += 8192)
           binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+        recording = null;
         await ask({ audio: btoa(binary) });
       } catch (e) {
         status(`Could not read the recording: ${e.message}`);
       } finally {
+        recording = null;
+        $("send").disabled = false;
         await ctx?.close();
       }
     };
@@ -190,6 +197,9 @@ $("record").addEventListener("click", async () => {
   } catch {
     stream?.getTracks().forEach((t) => t.stop());
     recording = null;
+    busy = false;
+    $("record").disabled = false;
+    $("send").disabled = false;
     status(
       "Microphone unavailable. Allow microphone access or type a question.",
     );
