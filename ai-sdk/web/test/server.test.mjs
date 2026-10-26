@@ -77,8 +77,8 @@ test("real HTTP audio path records activation without text/audio/credentials", a
   const r = await f.post("/api/turn", { audio: wav().toString("base64") });
   assert.equal(r.status, 200);
   const d = await r.json();
-  assert.match(d.reply, /one tenth of a cent/);
-  assert.match(d.reply, /four cents/);
+  assert.match(d.reply, /pricing link below/);
+  assert.match(d.reply, /pyai dot com slash pricing/);
   assert.deepEqual(f.calls, ["hear", "speak"]);
   assert.equal(
     (await f.post("/api/event", { event: "playback_started", turn: d.turn }))

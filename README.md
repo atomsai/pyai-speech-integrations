@@ -28,12 +28,10 @@ catalog contains 200 stock voices across 17 language groups (checked October 25,
 conditions and terminology. See the [language table](https://docs.pyai.com/reference/language-support)
 and query `GET /v1/voices` for the current catalog.
 
-## Predictable speech pricing
+## Pricing
 
-Hear is $0.001 per audio minute. Synchronous nonempty requests round up to a
-started minute per request; empty transcripts are free. Speak is $0.04 per
-generated audio minute, metered by output duration. Your LLM, framework,
-telephony and hosting costs are separate. [Current pricing](https://pyai.com/pricing).
+See the [PyAI pricing page](https://pyai.com/pricing) for current Hear and Speak
+rates and billing details. LLM, framework, telephony and hosting costs are separate.
 
 Customer inputs and outputs are not used for shared/general model training by
 default. This is separate from retention; [read the privacy policy](https://pyai.com/legal/privacy).
