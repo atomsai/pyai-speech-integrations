@@ -50,10 +50,8 @@ of equal measured quality for every voice, accent or language.
 
 ## Pricing and data
 
-- Hear: $0.001 per audio minute. Synchronous nonempty requests round up to a
-  started minute per request; empty transcripts are free.
-- Speak: $0.04 per generated audio minute, metered by output duration.
-- LLM, framework and hosting costs are separate. See [current pricing](https://pyai.com/pricing).
+- See the [PyAI pricing page](https://pyai.com/pricing) for current Hear and Speak
+  rates and billing details. LLM, framework and hosting costs are separate.
 - Customer inputs and outputs are not used for shared/general model training by
   default. No-training is separate from retention; see the
   [privacy policy](https://pyai.com/legal/privacy).

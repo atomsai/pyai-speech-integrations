@@ -29,7 +29,7 @@ const equal = (a, b) => {
 };
 export function guideReply(text) {
   if (/price|pricing|cost|charge/i.test(text))
-    return "Hear costs one tenth of a cent per input audio minute, rounded up to a started minute per nonempty synchronous request. Speak costs four cents per generated audio minute. Hosting and your language model cost extra.";
+    return "For current Hear and Speak rates and billing details, open the pricing link below or visit pyai dot com slash pricing. Hosting and your language model are billed separately.";
   if (/language|voice|accent/i.test(text))
     return "Hear supports 29 recognition languages. Speak offers 200 stock voices across 17 language groups in the October 25 catalog. Test your own accents and terminology before going live.";
   if (/train|privacy|retain/i.test(text))
