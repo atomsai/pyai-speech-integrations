@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { readFile, appendFile, mkdir } from "node:fs/promises";
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes, timingSafeEqual, createHmac } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { createPyAIAudio } from "../audio.mjs";
@@ -43,6 +43,10 @@ export function createVoiceServer({
   answer = async (text) => guideReply(text),
   mode = "product-guide",
   accessCode,
+  publicDemo = false,
+  sessionSecret,
+  storage,
+  referralCode,
   origin = "http://localhost:3000",
   dataDir = "./.voice-data",
   maxDailyTurns = 100,
@@ -50,7 +54,9 @@ export function createVoiceServer({
   timeoutMs = 45000,
   now = () => Date.now(),
 } = {}) {
-  if (!accessCode || accessCode.length < 16)
+  if (publicDemo && (!storage || !sessionSecret || sessionSecret.length < 32))
+    throw new Error("Public demo requires durable storage and a signing secret.");
+  if (!publicDemo && (!accessCode || accessCode.length < 16))
     throw new Error("Set DEMO_ACCESS_CODE to at least 16 characters.");
   if (!Number.isInteger(maxDailyTurns) || maxDailyTurns < 1)
     throw new Error("Invalid daily turn limit.");
@@ -58,7 +64,7 @@ export function createVoiceServer({
   const sessions = new Map();
   let busy = false,
     reservations = [];
-  const ready = mkdir(dataDir, { recursive: true }).then(async () => {
+  const ready = storage ? Promise.resolve() : mkdir(dataDir, { recursive: true }).then(async () => {
     try {
       reservations = (
         await readFile(resolve(dataDir, "reservations.jsonl"), "utf8")
@@ -71,19 +77,29 @@ export function createVoiceServer({
       if (e.code !== "ENOENT") throw e;
     }
   });
-  const event = async (session, name, extra = {}) =>
-    appendFile(
-      resolve(dataDir, "events.jsonl"),
-      JSON.stringify({
-        version: 1,
-        at: new Date(now()).toISOString(),
-        session: session.id,
-        source: session.source,
-        event: name,
-        ...extra,
-      }) + "\n",
-      { mode: 0o600 },
-    );
+  const event = async (session, name, extra = {}) => {
+    const row = { version: 1, at: new Date(now()).toISOString(), session: session.id, source: session.source, event: name, ...extra };
+    if (storage) return storage.event(row);
+    return appendFile(resolve(dataDir, "events.jsonl"), JSON.stringify(row) + "\n", { mode: 0o600 });
+  };
+  const signupUrl = (source) => {
+    const target = new URL('https://console.pyai.com/?signup=1&path=api');
+    const url = /^cp_[a-z0-9]{20,40}$/.test(referralCode || '') ? new URL(`https://pyai.com/r/${referralCode}`) : target;
+    if (url !== target) url.searchParams.set('next', target.toString());
+    url.searchParams.set('utm_source', sourceNames.has(source) ? source : 'direct');
+    url.searchParams.set('utm_medium', 'voice-demo'); url.searchParams.set('utm_campaign', 'speech-activation');
+    return url.toString();
+  };
+  function visitorCookie(req) {
+    const raw = (req.headers.cookie || '').match(/(?:^|;\s*)voice_visitor=([a-f0-9]{32}\.[0-9]{13}\.[a-f0-9]{64})(?:;|$)/)?.[1];
+    const sign = (value) => createHmac('sha256', sessionSecret).update(value).digest('hex');
+    if (raw) {
+      const [id, expiry, signature] = raw.split('.');
+      if (Number(expiry) > now() && Number(expiry) <= now() + 30 * 86400000 && equal(sign(`${id}.${expiry}`), signature)) return { id, value: raw };
+    }
+    const id = randomBytes(16).toString('hex'), expiry = now() + 30 * 86400000;
+    return { id, value: `${id}.${expiry}.${sign(`${id}.${expiry}`)}` };
+  }
   const send = (res, status, data) => {
     res.writeHead(status, { "Content-Type": "application/json" });
     res.end(JSON.stringify(data));
@@ -124,6 +140,8 @@ export function createVoiceServer({
         res.end(await readFile(new URL(`./public/${file}`, import.meta.url)));
         return;
       }
+      if (req.method === "GET" && url.pathname === "/api/config")
+        return send(res, 200, { publicDemo, mode, signupUrl: signupUrl(url.searchParams.get("source")) });
       if (req.method === "GET" && url.pathname === "/healthz")
         return send(res, 200, { ok: true });
       if (req.method !== "POST") return send(res, 404, { error: "Not found" });
@@ -135,12 +153,15 @@ export function createVoiceServer({
         if (s.expires < now()) sessions.delete(id);
       if (url.pathname === "/api/session") {
         const input = JSON.parse((await body(req, 1024)).toString());
-        if (!equal(String(input.code || ""), accessCode))
+        if (!publicDemo && !equal(String(input.code || ""), accessCode))
           return send(res, 401, { error: "Check your demo access code." });
         if (sessions.size >= 500)
           return send(res, 429, {
             error: "Demo at capacity. Please try later.",
           });
+        if (storage && !(await storage.start(new Date(now()).toISOString().slice(0, 10))))
+          return send(res, 429, { error: "Today’s demo is full. Create your PyAI account to continue." });
+        const visitor = publicDemo ? visitorCookie(req) : null;
         const id = randomBytes(24).toString("hex");
         session = {
           id,
@@ -148,6 +169,8 @@ export function createVoiceServer({
           expires: now() + 1800000,
           turns: 0,
           lastTurn: null,
+          events: new Set(),
+          visitor: visitor?.id || id,
         };
         await event(session, "session_started");
         sessions.set(id, session);
@@ -155,7 +178,8 @@ export function createVoiceServer({
           "Set-Cookie",
           `voice_session=${id}; HttpOnly; SameSite=Strict; Path=/; Max-Age=1800${expectedOrigin.startsWith("https:") ? "; Secure" : ""}`,
         );
-        return send(res, 200, { ok: true, mode });
+        if (visitor) res.setHeader("Set-Cookie", [res.getHeader("Set-Cookie"), `voice_visitor=${visitor.value}; HttpOnly; SameSite=Strict; Path=/; Max-Age=2592000${expectedOrigin.startsWith("https:") ? "; Secure" : ""}`]);
+        return send(res, 200, { ok: true, mode, signupUrl: signupUrl(session.source) });
       }
       const token = (req.headers.cookie || "").match(
         /(?:^|;\s*)voice_session=([a-f0-9]{48})(?:;|$)/,
@@ -163,7 +187,7 @@ export function createVoiceServer({
       session = sessions.get(token);
       if (!session)
         return send(res, 401, {
-          error: "Your demo session expired. Enter the access code again.",
+          error: publicDemo ? "Your demo session expired. Start a new demo session." : "Your demo session expired. Enter the access code again.",
         });
       if (url.pathname === "/api/event") {
         const input = JSON.parse((await body(req, 512)).toString());
@@ -174,6 +198,9 @@ export function createVoiceServer({
           input.turn !== session.lastTurn
         )
           return send(res, 400, { error: "Unknown audio turn" });
+        const eventKey = `${input.event}:${input.event === "playback_started" ? input.turn : ""}`;
+        if (session.events.has(eventKey)) return send(res, 200, { ok: true });
+        session.events.add(eventKey);
         await event(session, input.event, {
           ...(input.event === "playback_started" ? { turn: input.turn } : {}),
           reported_by: "browser",
@@ -236,12 +263,14 @@ export function createVoiceServer({
         });
       const turn = randomBytes(12).toString("hex");
       const reservation = { day, turn };
-      await appendFile(
+      if (storage && !(await storage.reserve(day, session.visitor, turn, maxDailyTurns)))
+        return send(res, 429, { error: "Your free demo allowance is used. Create your own PyAI account to continue." });
+      if (!storage) await appendFile(
         resolve(dataDir, "reservations.jsonl"),
         JSON.stringify(reservation) + "\n",
         { mode: 0o600 },
       );
-      reservations.push(reservation);
+      if (!storage) reservations.push(reservation);
       session.turns++;
       await event(session, "turn_started", {
         turn,
@@ -327,6 +356,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     answer,
     mode: answer ? "llm" : "product-guide",
     accessCode: process.env.DEMO_ACCESS_CODE,
+    publicDemo: process.env.PUBLIC_DEMO === "true",
+    sessionSecret: process.env.SESSION_SECRET,
+    referralCode: process.env.REFERRAL_CODE,
+    storage: process.env.DEMO_BUCKET ? (await import("./cloud-store.mjs")).createCloudStore({ bucket: process.env.DEMO_BUCKET }) : undefined,
     origin,
     dataDir: process.env.DATA_DIR || "./.voice-data",
     maxDailyTurns: Number(process.env.MAX_DAILY_TURNS || 100),
