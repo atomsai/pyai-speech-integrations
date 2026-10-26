@@ -247,3 +247,16 @@ test("daily usage reservations survive a server restart", async (t) => {
   );
   assert.deepEqual(second.calls, []);
 });
+
+test('public pilot issues secure visitor identity and fails closed on exhausted shared cap',async(t)=>{
+ const events=[];let reservations=0;
+ const f=await fixture(t,{publicDemo:true,sessionSecret:'x'.repeat(32),referralCode:'cp_'+'a'.repeat(26),storage:{start:async()=>true,event:async e=>events.push(e),reserve:async()=>++reservations<=1}});
+ const config=await (await fetch(f.base+'/api/config?source=livekit')).json();
+ assert.equal(config.publicDemo,true);assert.match(config.signupUrl,/pyai.com\/r\/cp_/);assert.match(config.signupUrl,/utm_source=livekit/);
+ const login=await f.login();assert.match(login.headers.get('set-cookie'),/voice_visitor=/);
+ assert.equal((await f.post('/api/turn',{text:'pricing'})).status,200);
+ await f.login();assert.equal((await f.post('/api/turn',{text:'pricing'})).status,429);
+ assert.deepEqual(f.calls,['speak']);
+ await f.post('/api/event',{event:'signup_clicked'});await f.post('/api/event',{event:'signup_clicked'});
+ assert.equal(events.filter(e=>e.event==='signup_clicked').length,1);
+});

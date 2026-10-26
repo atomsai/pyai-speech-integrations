@@ -81,6 +81,7 @@ $("login").addEventListener("submit", async (e) => {
     if (connected.mode === "offline-preview")
       $("mode").textContent =
         "Offline preview: canned answers and a test tone. No speech or language-model provider is called.";
+    if (connected.signupUrl) $("signup").href = connected.signupUrl;
     $("code").value = "";
     $("login").hidden = true;
     $("chat").hidden = false;
@@ -199,3 +200,14 @@ window.addEventListener("pagehide", () => {
   stopAudio();
   if (blobURL) URL.revokeObjectURL(blobURL);
 });
+
+fetch(`/api/config?source=${encodeURIComponent(new URL(location.href).searchParams.get('source') || 'direct')}`)
+  .then(r => r.json()).then(config => {
+    if (config.signupUrl) $('signup').href = config.signupUrl;
+    if (config.publicDemo) {
+      $('code').hidden = true; $('code').required = false;
+      document.querySelector('label[for="code"]').hidden = true;
+      $('login').querySelector('button').textContent = 'Try three free questions';
+      status('Start the demo, then type or record a question. No account needed.');
+    }
+  }).catch(() => status('Could not load the demo. Please refresh.'));
