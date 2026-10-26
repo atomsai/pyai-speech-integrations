@@ -5,6 +5,17 @@ This server-side example uses AI SDK 7's speech and transcription interfaces wit
 PyAI's OpenAI-compatible endpoints. It calls PyAI directly with your PyAI key.
 AI Gateway provider onboarding is separate; this is not a native Gateway listing.
 
+## Try it live, then build your own
+
+[Open the Hear + Speak voice demo](https://pyai-voice-demo-wfls74alya-uc.a.run.app/?source=ai-sdk).
+Record a question about PyAI, read Hear's transcript, and listen to Speak's reply.
+You can also type. Answers are scripted; transcription and speech use real PyAI
+APIs. Three free questions, no signup required; daily demo limits apply.
+
+The hosted app is a standalone speech reference, not a hosted LiveKit room or
+Pipecat pipeline. [Get a free API key](https://console.pyai.com/playground?signup=1&path=api&utm_source=github&utm_medium=readme&utm_campaign=speech-activation)
+to use the integrations below, or sign up directly from the demo.
+
 ## Run
 
 Use Node.js 22 or newer:
