@@ -1,0 +1,7 @@
+node_modules
+**/.env
+**/.env.*
+.voice-data
+*.wav
+web/test
+web/preview.mjs

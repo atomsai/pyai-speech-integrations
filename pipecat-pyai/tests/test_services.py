@@ -79,7 +79,9 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
                 connect_mock.call_args.kwargs["subprotocols"],
                 ["pyai.v1", "pyai-key.pyai_test_unit"],
             )
-            self.assertNotIn("language", parse_qs(urlsplit(connect_mock.call_args.args[0]).query))
+            self.assertNotIn(
+                "language", parse_qs(urlsplit(connect_mock.call_args.args[0]).query)
+            )
             self.assertIsNotNone(service._receive_task)
             await service._disconnect()
 
@@ -88,7 +90,9 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_explicit_language_hint_is_preserved(self):
         websocket = FakeWebSocket()
-        service = PyAISTTService(api_key="pyai_test_unit", language="fr", sample_rate=16000)
+        service = PyAISTTService(
+            api_key="pyai_test_unit", language="fr", sample_rate=16000
+        )
         with patch(
             "pipecat_pyai.stt.websockets.connect",
             new=AsyncMock(return_value=websocket),
@@ -126,9 +130,7 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
         service.cancel_task = cancel_task
         service._receive_task = asyncio.create_task(service._receive_messages())
 
-        await service._handle_vad_user_stopped_speaking(
-            VADUserStoppedSpeakingFrame()
-        )
+        await service._handle_vad_user_stopped_speaking(VADUserStoppedSpeakingFrame())
         stop_task = asyncio.create_task(service.stop(EndFrame()))
         await asyncio.sleep(0)
 
@@ -158,20 +160,39 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
         service._receive_task = asyncio.create_task(service._receive_messages())
         stop_task = None
         try:
-            await service._handle_vad_user_stopped_speaking(VADUserStoppedSpeakingFrame())
+            await service._handle_vad_user_stopped_speaking(
+                VADUserStoppedSpeakingFrame()
+            )
             stop_task = asyncio.create_task(service.stop(EndFrame()))
-            await websocket.queue_message(json.dumps({"type": "final", "text": "Earlier words.",
-                "endpoint_reason": "endpoint"}))
+            await websocket.queue_message(
+                json.dumps(
+                    {
+                        "type": "final",
+                        "text": "Earlier words.",
+                        "endpoint_reason": "endpoint",
+                    }
+                )
+            )
             for _ in range(10):
                 await asyncio.sleep(0)
             self.assertFalse(stop_task.done())
             self.assertFalse(websocket.closed)
             self.assertEqual(service._finals_pending, 1)
-            await websocket.queue_message(json.dumps({"type": "final", "text": "Quiet suffix.",
-                "endpoint_reason": "client_commit"}))
+            await websocket.queue_message(
+                json.dumps(
+                    {
+                        "type": "final",
+                        "text": "Quiet suffix.",
+                        "endpoint_reason": "client_commit",
+                    }
+                )
+            )
             await asyncio.wait_for(stop_task, 1)
-            finals = [call.args[0].text for call in service.push_frame.await_args_list
-                if isinstance(call.args[0], TranscriptionFrame)]
+            finals = [
+                call.args[0].text
+                for call in service.push_frame.await_args_list
+                if isinstance(call.args[0], TranscriptionFrame)
+            ]
             self.assertEqual(finals, ["Earlier words.", "Quiet suffix."])
             self.assertTrue(websocket.closed)
         finally:
@@ -187,13 +208,19 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
         service._register_pending_commit()
         service._register_pending_commit()
         for reason in ("endpoint", "max_utterance", "peak_te_early", "eof"):
-            service._websocket = FakeWebSocket([json.dumps({"type": "final", "text": reason,
-                "endpoint_reason": reason})])
+            service._websocket = FakeWebSocket(
+                [
+                    json.dumps(
+                        {"type": "final", "text": reason, "endpoint_reason": reason}
+                    )
+                ]
+            )
             await service._receive_messages()
             self.assertEqual(service._finals_pending, 2)
         for reason, remaining in (("client_commit", 1), ("commit", 0)):
-            service._websocket = FakeWebSocket([json.dumps({"type": "final", "text": "",
-                "endpoint_reason": reason})])
+            service._websocket = FakeWebSocket(
+                [json.dumps({"type": "final", "text": "", "endpoint_reason": reason})]
+            )
             await service._receive_messages()
             self.assertEqual(service._finals_pending, remaining)
         self.assertTrue(service._finals_drained.is_set())
@@ -203,9 +230,7 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
         service = PyAISTTService(api_key="pyai_test_unit", sample_rate=16000)
         service._websocket = websocket
 
-        await service._handle_vad_user_stopped_speaking(
-            VADUserStoppedSpeakingFrame()
-        )
+        await service._handle_vad_user_stopped_speaking(VADUserStoppedSpeakingFrame())
 
         self.assertEqual(
             websocket.sent,
@@ -278,9 +303,7 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
         service.push_error_frame = AsyncMock()
         service.emit_stt_usage_metrics = AsyncMock()
 
-        await service._handle_vad_user_stopped_speaking(
-            VADUserStoppedSpeakingFrame()
-        )
+        await service._handle_vad_user_stopped_speaking(VADUserStoppedSpeakingFrame())
         await service._receive_messages()
 
         self.assertEqual(
@@ -384,10 +407,13 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
         service.cancel_task = cancel_task
         service.get_clock = lambda: SimpleNamespace(get_time=lambda: 0)
         pushed = []
+        finished = asyncio.Event()
 
         async def capture(frame, direction=FrameDirection.DOWNSTREAM):
             _ = direction
             pushed.append(frame)
+            if isinstance(frame, TTSStoppedFrame):
+                finished.set()
 
         service.push_frame = capture
 
@@ -396,14 +422,18 @@ class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
             TTSSpeakFrame("hello"),
             FrameDirection.DOWNSTREAM,
         )
-        await asyncio.wait_for(service._serialization_queue.join(), timeout=1)
+        await asyncio.wait_for(finished.wait(), timeout=2)
         await service.stop(EndFrame())
 
         audio = [frame for frame in pushed if isinstance(frame, TTSAudioRawFrame)]
         self.assertEqual(len(audio), 2)
         self.assertTrue(any(isinstance(frame, TTSStartedFrame) for frame in pushed))
         self.assertTrue(any(isinstance(frame, TTSStoppedFrame) for frame in pushed))
-        self.assertEqual(service._audio_contexts, {})
+        self.assertFalse(
+            service.get_audio_contexts()
+            if hasattr(service, "get_audio_contexts")
+            else service._audio_contexts
+        )
         service.start_ttfb_metrics.assert_awaited_once()
         service.stop_ttfb_metrics.assert_awaited_once()
         service.push_error_frame.assert_not_awaited()

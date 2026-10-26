@@ -1,0 +1,30 @@
+name: Framework demos
+on:
+  push:
+    paths: ['demos/**', 'livekit-plugins-pyai/**', 'pipecat-pyai/**', '.github/workflows/framework-demos.yml']
+  pull_request:
+    paths: ['demos/**', 'livekit-plugins-pyai/**', 'pipecat-pyai/**', '.github/workflows/framework-demos.yml']
+permissions:
+  contents: read
+jobs:
+  framework-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      PYAI_API_KEY: offline-contract
+      OPENAI_API_KEY: offline-contract
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-livekit.txt -r requirements-pipecat.txt
+        working-directory: demos
+      - run: python -m unittest discover -s livekit-plugins-pyai/tests -v
+      - run: python -m unittest discover -s pipecat-pyai/tests -v
+      - run: python -m unittest discover -s demos -p 'test_*.py' -v
+      - run: python demos/livekit_agent.py --help
+      - run: python demos/pipecat_bot.py --help
+      - run: python demos/pipecat_pipeline_check.py

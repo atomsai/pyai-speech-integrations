@@ -1,0 +1,4 @@
+../livekit-plugins-pyai[examples]
+livekit-agents==1.8.9
+livekit-plugins-openai==1.8.9
+livekit-plugins-silero==1.8.9

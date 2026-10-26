@@ -13,6 +13,14 @@
     "url": "https://files.pythonhosted.org/packages/76/b1/e001cadb041c9a5527e8f4a5984188e40dcb33122b69b0d510d543ffb068/pipecat_pyai-0.1.3.tar.gz",
     "sha256": "87591c991227e6fdf41a2360899a8c51ac71d65d037d92431643f93f0dc473f9",
     "files": 14,
-    "source": "Public PyPI source distribution; no private monorepo runtime code copied"
+    "source": "Public PyPI source distribution; no private monorepo runtime code copied",
+    "local_changes": {
+      "candidate_version": "0.1.4",
+      "published": false,
+      "changes": [
+        "Initialize explicit STT model/language settings for Pipecat 1.14",
+        "Use public pipeline completion signals in service tests"
+      ]
+    }
   }
 ]
