@@ -32,7 +32,9 @@ examples = [
 
 [project.urls]
 Homepage = "https://pyai.com"
-Documentation = "https://pyai.com/compare/livekit"
+Documentation = "https://docs.pyai.com/guides/livekit-agents"
+Repository = "https://github.com/atomsai/pyai-speech-integrations"
+Issues = "https://github.com/atomsai/pyai-speech-integrations/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

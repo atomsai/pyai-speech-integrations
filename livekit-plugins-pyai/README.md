@@ -28,7 +28,7 @@ session = AgentSession(
 )
 ```
 
-Set your key once: `export PYAI_API_KEY=pyai_live_...` (or pass `api_key=`). The
+Set `PYAI_API_KEY` securely in the server environment (or pass `api_key=`). The
 key needs the `hear:stream`, `hear:transcribe`, and `speak:synthesize` scopes.
 List voices at `GET https://api.pyai.com/v1/voices`.
 
@@ -88,3 +88,23 @@ supported language only when you intend to pin recognition.
 Includes the `pyai.v1` WebSocket handshake marker alongside the credential
 subprotocol for compatibility with the current Hear endpoint. TTS continues
 to reuse an aiohttp session and forward PCM audio as it arrives.
+
+## Maintainer and compatibility
+
+Maintained by PyAI, operated by SaaS Labs US, Inc. Source and issues:
+https://github.com/atomsai/pyai-speech-integrations
+
+A representative two-turn media → STT → LLM → TTS flow passed with
+LiveKit Agents 1.8.0 on Python 3.12 on November 12, 2026. Recorded audio
+was independently transcribed and a human confirmed intelligible playback.
+This does not establish microphone-driven interruption or compatibility with
+every version allowed by the dependency range.
+
+Before running an example, verify the key's project, environment, and billing
+limits with `GET https://api.pyai.com/v1/me`. Both test and live keys require
+checking their actual limits; an environment label is not a cost cap.
+
+Full WebRTC examples and their separately pinned dependencies are in
+[the existing demos](../demos/README.md). Those demo pins are distinct from
+the versions used in the November 12 acceptance run; do not infer audio
+qualification of the newer pins from that run.
