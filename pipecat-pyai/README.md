@@ -9,7 +9,7 @@ LLM, tools, and turn policy. Use
 managed speech-to-speech agent instead.
 
 ```bash
-pip install pipecat-pyai==0.1.3
+pip install pipecat-pyai==0.1.4
 ```
 
 Requires Python 3.11 or newer.
@@ -23,7 +23,7 @@ stt = PyAISTTService()             # PyAI Hear (streaming STT)
 tts = PyAITTSService(voice="stock_emma_en_gb")  # PyAI Speak (TTS)
 ```
 
-Set your key once: `export PYAI_API_KEY=pyai_live_...` (or pass `api_key=`). The
+Set `PYAI_API_KEY` securely in the server environment (or pass `api_key=`). The
 key needs the `hear:stream`, `speak:synthesize` scopes. List voices at
 `GET https://api.pyai.com/v1/voices`. See the
 [integration status and comparison](https://pyai.com/compare/pipecat) for the
@@ -76,3 +76,50 @@ Automatic transcript finals no longer satisfy a later requested speech commit.
 When stopping, the adapter waits for the matching commit completion and keeps
 all final transcript text, including a late suffix. Older completion messages
 remain compatible; the existing five-second drain timeout is unchanged.
+
+## Maintainer and compatibility
+
+Maintained by PyAI, operated by SaaS Labs US, Inc. Source and issues:
+https://github.com/atomsai/pyai-speech-integrations
+
+A representative two-turn media → STT → LLM → TTS flow passed with
+Pipecat 1.8.1 on Python 3.12 on November 12, 2026. Recorded audio
+was independently transcribed and a human confirmed intelligible playback.
+This does not establish microphone-driven interruption or compatibility with
+every version allowed by the dependency range.
+
+That audio run used the preceding adapter code. Version 0.1.4 initializes STT
+model/language settings; its minimum/latest framework checks passed separately.
+Provider options are constructor-only: runtime settings updates are unsupported.
+
+Before running an example, verify the key's project, environment, and billing
+limits with `GET https://api.pyai.com/v1/me`. Both test and live keys require
+checking their actual limits; an environment label is not a cost cap.
+
+Full WebRTC examples and their separately pinned dependencies are in
+[the existing demos](../demos/README.md). Those demo pins are distinct from
+the versions used in the November 12 acceptance run; do not infer audio
+qualification of the newer pins from that run.
+
+## Run the standalone WebRTC example
+
+From this package directory, use Python 3.12 and install the example's pinned
+dependencies in an isolated environment:
+
+```bash
+python3.12 -m venv .venv
+.venv/bin/pip install "pipecat-pyai==0.1.4" "pipecat-ai[webrtc,runner,openai]==1.14.0" "python-dotenv==1.1.1"
+.venv/bin/python examples/bot.py -t webrtc --host 127.0.0.1
+```
+
+Set `PYAI_API_KEY` and `OPENAI_API_KEY` securely before starting. Open the runner's
+local URL and connect with microphone permission. Use headphones to avoid echo.
+The example includes the transport, VAD, LLM, speech services, and disconnect
+cleanup. `DEMO_SECONDS` defaults to 60; it limits session duration, not spending.
+Running a conversation can incur PyAI and LLM charges.
+
+Non-audio qualification on November 13, 2026: the pinned Pipecat 1.14.0 /
+pipecat-pyai 0.1.4 environment passed dependency consistency, CLI imports,
+constructor-default checks, and pipeline startup/cancellation on Python 3.12.
+The check disabled the STT connection hook and blocked outbound connections;
+it generated no audio and does not establish live speech or barge-in behavior.
