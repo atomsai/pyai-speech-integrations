@@ -362,6 +362,40 @@ class FakeSession:
 
 
 class TTSServiceTests(unittest.IsolatedAsyncioTestCase):
+    async def test_cleanup_closes_owned_session_without_terminal_frame(self):
+        service = PyAITTSService(api_key="pyai_test_unit", voice="stock_emma_en_gb")
+        session = SimpleNamespace(close=AsyncMock())
+        service._session = session
+
+        with patch("pipecat.services.tts_service.TTSService.cleanup", new_callable=AsyncMock):
+            await service.cleanup()
+            await service.cleanup()
+
+        session.close.assert_awaited_once()
+        self.assertIsNone(service._session)
+
+    async def test_cleanup_preserves_caller_owned_session(self):
+        session = SimpleNamespace(close=AsyncMock())
+        service = PyAITTSService(
+            api_key="pyai_test_unit",
+            voice="stock_emma_en_gb",
+            aiohttp_session=session,
+        )
+
+        with patch("pipecat.services.tts_service.TTSService.cleanup", new_callable=AsyncMock):
+            await service.cleanup()
+
+        session.close.assert_not_awaited()
+        self.assertIs(service._session, session)
+
+    async def test_cleanup_before_start_is_safe(self):
+        service = PyAITTSService(api_key="pyai_test_unit", voice="stock_emma_en_gb")
+
+        with patch("pipecat.services.tts_service.TTSService.cleanup", new_callable=AsyncMock):
+            await service.cleanup()
+
+        self.assertIsNone(service._session)
+
     async def test_audio_frames_keep_context_id(self):
         service = PyAITTSService(
             api_key="pyai_test_unit",
