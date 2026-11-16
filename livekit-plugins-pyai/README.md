@@ -105,6 +105,6 @@ limits with `GET https://api.pyai.com/v1/me`. Both test and live keys require
 checking their actual limits; an environment label is not a cost cap.
 
 Full WebRTC examples and their separately pinned dependencies are in
-[the existing demos](../demos/README.md). Those demo pins are distinct from
+[the existing demos](https://github.com/atomsai/pyai-speech-integrations/blob/main/demos/README.md). Those demo pins are distinct from
 the versions used in the November 12 acceptance run; do not infer audio
 qualification of the newer pins from that run.
