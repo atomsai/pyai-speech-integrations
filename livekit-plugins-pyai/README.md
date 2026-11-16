@@ -9,7 +9,7 @@ turn policy. Use [PyAI Omni](https://docs.pyai.com/guides/omni-overview) when
 you want one managed speech-to-speech agent instead.
 
 ```bash
-pip install livekit-plugins-pyai==0.1.2
+pip install livekit-plugins-pyai==0.1.3
 ```
 
 Requires Python 3.10 or newer.
@@ -88,6 +88,10 @@ supported language only when you intend to pin recognition.
 Includes the `pyai.v1` WebSocket handshake marker alongside the credential
 subprotocol for compatibility with the current Hear endpoint. TTS continues
 to reuse an aiohttp session and forward PCM audio as it arrives.
+
+## 0.1.3 release
+
+Adds public repository and issue links to package metadata and packaged guide links.
 
 ## Maintainer and compatibility
 

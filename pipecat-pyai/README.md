@@ -9,7 +9,7 @@ LLM, tools, and turn policy. Use
 managed speech-to-speech agent instead.
 
 ```bash
-pip install pipecat-pyai==0.1.4
+pip install pipecat-pyai==0.1.5
 ```
 
 Requires Python 3.11 or newer.
@@ -77,6 +77,18 @@ When stopping, the adapter waits for the matching commit completion and keeps
 all final transcript text, including a late suffix. Older completion messages
 remain compatible; the existing five-second drain timeout is unchanged.
 
+## 0.1.4 release
+
+STT model/language settings now match the Hear request and pass Pipecat
+startup validation. Automatic language detection remains the default.
+
+## 0.1.5 release
+
+Adds public repository and issue links to package metadata and packaged guide links.
+The TTS service now closes its owned HTTP session during guaranteed framework
+cleanup, including when stop/cancel frames are skipped; caller-owned sessions
+remain open.
+
 ## Maintainer and compatibility
 
 Maintained by PyAI, operated by SaaS Labs US, Inc. Source and issues:
@@ -108,7 +120,7 @@ dependencies in an isolated environment:
 
 ```bash
 python3.12 -m venv .venv
-.venv/bin/pip install "pipecat-pyai==0.1.4" "pipecat-ai[webrtc,runner,openai]==1.14.0" "python-dotenv==1.1.1"
+.venv/bin/pip install "pipecat-pyai==0.1.5" "pipecat-ai[webrtc,runner,openai]==1.14.0" "python-dotenv==1.1.1"
 .venv/bin/python examples/bot.py -t webrtc --host 127.0.0.1
 ```
 

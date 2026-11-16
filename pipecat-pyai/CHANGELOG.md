@@ -1,10 +1,16 @@
 # Changelog
 
-## 0.1.4 — unreleased
+## 0.1.5 — 2026-11-16
+
+- Add public source, issues and direct integration-guide metadata.
+- Include a complete bounded WebRTC example.
+- Close owned TTS HTTP sessions during cleanup, preserving caller-owned sessions.
+- Match the published package dependency range; demo framework pins remain separate.
+
+## 0.1.4 — 2026-11-12
 
 - Initialize STT model and language settings explicitly for Pipecat 1.14.
 - Use public audio-context completion signals in pipeline tests.
-- Require Pipecat 1.14 or newer for this source candidate.
 
 ## 0.1.3 — 2026-09-24
 

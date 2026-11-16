@@ -5,8 +5,8 @@ and voice agents you already build. Keep your LLM, tools, transport and turn pol
 
 | Your stack | Start here | Available today |
 |---|---|---|
-| LiveKit Agents, Python | [LiveKit plugin](livekit-plugins-pyai/) | `pip install livekit-plugins-pyai==0.1.2` |
-| Pipecat, Python | [Pipecat services](pipecat-pyai/) | `pip install pipecat-pyai==0.1.4` |
+| LiveKit Agents, Python | [LiveKit plugin](livekit-plugins-pyai/) | `pip install livekit-plugins-pyai==0.1.3` |
+| Pipecat, Python | [Pipecat services](pipecat-pyai/) | `pip install pipecat-pyai==0.1.5` |
 | AI SDK 7, Node.js | [Speech and transcription example](ai-sdk/) | Direct PyAI API integration; offline contracts and live Speak → Hear round trip passed |
 
 ## Try it live, then build your own
@@ -55,7 +55,7 @@ Vercel AI Gateway/Hugging Face provider approval is implied.
 
 The Python directories originate from the public Apache-2.0 PyPI source releases.
 Their archive URLs and verified SHA-256 hashes are in [SOURCE-PROVENANCE.json](SOURCE-PROVENANCE.json).
-Pipecat adapter 0.1.4 is published on PyPI and includes explicit model/language settings for Pipecat 1.14. Install the local source using the demo requirements when running these examples. Newer demo framework pins have separate non-audio startup checks; they do not inherit the earlier live audio qualification.
+LiveKit adapter 0.1.3 and Pipecat adapter 0.1.5 are published on PyPI with direct documentation, source and issue links. Pipecat 0.1.5 also closes owned TTS HTTP sessions during cleanup and includes a complete WebRTC example. Install the local source using the demo requirements when running these examples. Newer demo framework pins have separate non-audio startup checks; they do not inherit the earlier live audio qualification.
 Each package retains its license and release history. The AI SDK example is
 Apache-2.0 under the adjacent LICENSE file.
 
