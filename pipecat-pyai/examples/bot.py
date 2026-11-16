@@ -1,6 +1,6 @@
 """Single-file PyAI STT/LLM/TTS WebRTC example, adapted from demos/pipecat_bot.py.
 
-Python 3.12; install pipecat-pyai==0.1.4, pipecat-ai[webrtc,runner,openai]==1.14.0,
+Python 3.12; install pipecat-pyai==0.1.5, pipecat-ai[webrtc,runner,openai]==1.14.0,
 and python-dotenv==1.1.1. Set PYAI_API_KEY and OPENAI_API_KEY server-side.
 Before use, verify the PyAI project and limits with GET /v1/me.
 Run: python bot.py -t webrtc --host 127.0.0.1

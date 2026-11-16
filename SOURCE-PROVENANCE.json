@@ -5,7 +5,23 @@
     "url": "https://files.pythonhosted.org/packages/66/63/bd782e10695e32c6a67c0497aa4d292b3857b61a817ed76970ae2bd3b753/livekit_plugins_pyai-0.1.2.tar.gz",
     "sha256": "a9e3148f6b055869c7513fb7a51810eb3c5dccfb4c092e210a74b3fb0aec035d",
     "files": 15,
-    "source": "Public PyPI source distribution; no private monorepo runtime code copied"
+    "source": "Public PyPI source distribution; no private monorepo runtime code copied",
+    "published_release": {
+      "version": "0.1.3",
+      "url": "https://files.pythonhosted.org/packages/b3/13/ce741f3537216e818c631386e4a55ea9dd452c95fc6c51e328ccf7d0594b/livekit_plugins_pyai-0.1.3.tar.gz",
+      "sha256": "4273912e79d8d2ca1036d38e0c98f5ca35141f47a7cbbe198f7c1262b1739631",
+      "verified_at": "2026-11-16",
+      "note": "Public PyPI source archive hash verified; all corresponding runtime Python files and examples match this checkout by AST. Original import history retained.",
+      "runtime_files_verified": [
+        "examples/agent.py",
+        "livekit/plugins/pyai/__init__.py",
+        "livekit/plugins/pyai/_utils.py",
+        "livekit/plugins/pyai/log.py",
+        "livekit/plugins/pyai/stt.py",
+        "livekit/plugins/pyai/tts.py",
+        "livekit/plugins/pyai/version.py"
+      ]
+    }
   },
   {
     "package": "pipecat-pyai",
@@ -23,11 +39,27 @@
       ]
     },
     "published_release": {
-      "version": "0.1.4",
-      "url": "https://files.pythonhosted.org/packages/40/78/35ba32774a52fbae5e7497ef4fe6a4561aeb29b4a6aff583175c2f721c42/pipecat_pyai-0.1.4.tar.gz",
-      "sha256": "f710a2c7926d5f62988ef6c600ddded1afba3d2019088b52894fbcd6de9c6312",
+      "version": "0.1.5",
+      "url": "https://files.pythonhosted.org/packages/71/1f/0d7ab28facc791a2e28802c94f14506188ffc106a834b5693cc337a718f6/pipecat_pyai-0.1.5.tar.gz",
+      "sha256": "57b83438f546dc1b38f54ccd68f9f1682e83b04a68d0be0966dc8913a7db0ed4",
       "verified_at": "2026-11-16",
-      "note": "Published package identity verified against PyPI. Original imported source provenance above is retained."
-    }
+      "note": "Public PyPI source archive hash verified; all corresponding runtime Python files and examples match this checkout by AST. Original import history retained.",
+      "runtime_files_verified": [
+        "examples/bot.py",
+        "src/pipecat_pyai/__init__.py",
+        "src/pipecat_pyai/_utils.py",
+        "src/pipecat_pyai/stt.py",
+        "src/pipecat_pyai/tts.py"
+      ]
+    },
+    "prior_published_releases": [
+      {
+        "version": "0.1.4",
+        "url": "https://files.pythonhosted.org/packages/40/78/35ba32774a52fbae5e7497ef4fe6a4561aeb29b4a6aff583175c2f721c42/pipecat_pyai-0.1.4.tar.gz",
+        "sha256": "f710a2c7926d5f62988ef6c600ddded1afba3d2019088b52894fbcd6de9c6312",
+        "verified_at": "2026-11-16",
+        "note": "Published package identity verified against PyPI. Original imported source provenance above is retained."
+      }
+    ]
   }
 ]
