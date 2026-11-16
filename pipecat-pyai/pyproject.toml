@@ -27,7 +27,9 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://pyai.com"
-Documentation = "https://pyai.com/compare/pipecat"
+Documentation = "https://docs.pyai.com/guides/pipecat"
+Repository = "https://github.com/atomsai/pyai-speech-integrations"
+Issues = "https://github.com/atomsai/pyai-speech-integrations/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

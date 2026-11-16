@@ -72,6 +72,10 @@ class PyAITTSService(TTSService):
         await super().cancel(frame)
         await self._maybe_close_session()
 
+    async def cleanup(self) -> None:
+        await super().cleanup()
+        await self._maybe_close_session()
+
     async def _maybe_close_session(self) -> None:
         if self._owns_session and self._session is not None:
             await self._session.close()

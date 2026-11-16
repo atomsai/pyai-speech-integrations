@@ -3,7 +3,7 @@
 These examples keep your language model and use PyAI for speech input/output.
 They are PyAI-maintained integrations, not marketplace endorsements.
 
-Use Python 3.12 and a dedicated test key with `hear:stream` and `speak:write`.
+Use Python 3.12 and a dedicated test key with `hear:stream` and `speak:synthesize`.
 Your LLM provider bills separately. Both demos close sessions after 60 seconds by
 default; `DEMO_SECONDS` controls this developer test bound. Start on localhost,
 not an unauthenticated public interface. Never put keys in a browser or Git.
@@ -52,8 +52,9 @@ The example supplies SmallWebRTCTransport, Silero VAD, the LLM context aggregato
 a greeting and disconnect cleanup. It rejects non-WebRTC transports.
 
 Pinned qualification targets: LiveKit Agents/plugins **1.8.9**, Pipecat **1.14.0**.
-The local Pipecat 0.1.4 candidate initializes explicit framework settings.
-It is installed from this checkout; PyPI 0.1.3 remains the published release.
+Pipecat adapter 0.1.4 is published on PyPI and initializes explicit framework
+settings. These demos install the adapter from this checkout. The pinned demo
+framework versions are targets, not a claim of completed live qualification.
 
 ## Repeatable 45-second acceptance script
 
