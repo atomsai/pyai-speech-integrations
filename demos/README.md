@@ -16,7 +16,7 @@ not an unauthenticated public interface. Never put keys in a browser or Git.
 
 A coding agent should verify its project with `whoami`, create or reuse a saved agent, and call `draft_website_widget` with the exact HTTPS website origin and both daily session limits. Show the result of `preview_website_widget` to the site owner. After approval, send that revision to `publish_website_widget` and embed the returned snippet. The browser receives a public widget ID. Read the [managed widget guide](https://docs.pyai.com/guides/website-voice-widget) for the full flow.
 
-In the 20 November 2026 test, the public launcher loaded and the service issued a session. The v12 connection closed before speech. The demo now uses the opt-in v12.1 widget with a revised browser connection handshake. A live spoken answer and interruption on this build remain unverified. The [recorded conversation](https://pyai.com/demos/website-enquiry/website-audio.webm) used a separate custom browser implementation.
+In the 20 November 2026 test, the public launcher loaded and the service issued a session. The v12 connection closed before speech. This example pins the opt-in v12.1 widget, which includes the browser’s supported connection protocol. The revised connection reached the connected state in a local browser test. A live spoken answer and interruption on this build remain unverified. The [recorded conversation](https://pyai.com/demos/website-enquiry/website-audio.webm) used a separate custom browser implementation.
 
 ### Transcribe Hindi-English calls into Latin letters
 
