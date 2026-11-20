@@ -11,6 +11,9 @@ and voice agents you already build. Keep your LLM, tools, transport and turn pol
 
 ## Try it live, then build your own
 
+- [Add a voice assistant to a website](demos/README.md#add-a-voice-assistant-to-a-website) with an origin-limited managed widget.
+- [Transcribe a private Hindi-English call into Latin letters](demos/README.md#transcribe-hindi-english-calls-into-latin-letters) with word timings and supported speaker labels.
+
 [Open the Hear + Speak voice demo](https://pyai-voice-demo-wfls74alya-uc.a.run.app/?source=direct).
 Record a question about PyAI, read Hear's transcript, and listen to Speak's reply.
 You can also type. Answers are scripted; transcription and speech use real PyAI

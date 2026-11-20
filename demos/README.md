@@ -10,7 +10,19 @@ not an unauthenticated public interface. Never put keys in a browser or Git.
 
 ## Try it live, then build your own
 
-[Try an interruptible website voice assistant](https://pyai-voice-demo-wfls74alya-uc.a.run.app/managed-widget) using the managed PyAI widget. This separate test allows one session per UTC day. [Embed it on your site](https://docs.pyai.com/guides/website-voice-widget).
+### Add a voice assistant to a website
+
+[Open the managed website widget](https://pyai-voice-demo-wfls74alya-uc.a.run.app/managed-widget). The visitor can open the launcher without a phone number. The test project allows one voice session per UTC day across all visitors. When the visitor starts, microphone audio goes to PyAI.
+
+A coding agent should verify its project with `whoami`, create or reuse a saved agent, and call `draft_website_widget` with the exact HTTPS website origin and both daily session limits. Show the result of `preview_website_widget` to the site owner. After approval, send that revision to `publish_website_widget` and embed the returned snippet. The browser receives a public widget ID. Read the [managed widget guide](https://docs.pyai.com/guides/website-voice-widget) for the full flow.
+
+In the 20 November 2026 test, the public launcher loaded and the service issued a session. The v12 connection closed before speech. This example pins the opt-in v12.1 widget, which includes the browser’s supported connection protocol. The revised connection reached the connected state in a local browser test. A live spoken answer and interruption on this build remain unverified. The [recorded conversation](https://pyai.com/demos/website-enquiry/website-audio.webm) used a separate custom browser implementation.
+
+### Transcribe Hindi-English calls into Latin letters
+
+For a local recording that may be sent privately to PyAI, upload the WAV directly with multipart `POST /v1/transcription/jobs` after verifying the project, budget and retention terms. Set `output_script=latin` for Roman Hinglish. On mono recordings request `diarize=true` for speaker labels when available. For one speaker per stereo channel use `channel=true`. Read `result.words` and `result.segments` for timings. Check names, amounts and speaker turns against the recording. This hosted flow requires cloud processing. [Full Hindi and Hinglish call-transcription recipe and measured results](https://pyai.com/guides/hindi-call-transcription#transcription-results).
+
+### Build with Hear and Speak
 
 [Open the Hear + Speak voice demo](https://pyai-voice-demo-wfls74alya-uc.a.run.app/?source=direct).
 Record a question about PyAI, read Hear's transcript, and listen to Speak's reply.
