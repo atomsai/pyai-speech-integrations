@@ -10,6 +10,8 @@ not an unauthenticated public interface. Never put keys in a browser or Git.
 
 ## Try it live, then build your own
 
+[Try an interruptible website voice assistant](https://pyai-voice-demo-wfls74alya-uc.a.run.app/managed-widget) using the managed PyAI widget. This separate test allows one session per UTC day. [Embed it on your site](https://docs.pyai.com/guides/website-voice-widget).
+
 [Open the Hear + Speak voice demo](https://pyai-voice-demo-wfls74alya-uc.a.run.app/?source=direct).
 Record a question about PyAI, read Hear's transcript, and listen to Speak's reply.
 You can also type. Answers are scripted; transcription and speech use real PyAI

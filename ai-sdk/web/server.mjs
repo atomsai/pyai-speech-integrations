@@ -134,6 +134,16 @@ export function createVoiceServer({
     try {
       await ready;
       const url = new URL(req.url, expectedOrigin);
+      if (req.method === "GET" && url.pathname === "/managed-widget") {
+        const nonce = randomBytes(18).toString("base64");
+        const template = await readFile(new URL("./public/managed-widget.html", import.meta.url), "utf8");
+        res.writeHead(200, {
+          "Content-Type": "text/html; charset=utf-8",
+          "Content-Security-Policy": `default-src 'none'; script-src https://cdn.pyai.com/widget/v12/pyai-widget.js; style-src 'self' 'nonce-${nonce}'; connect-src https://api.pyai.com wss://api.pyai.com; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`,
+        });
+        res.end(template.replace("WIDGET_STYLE_NONCE", nonce));
+        return;
+      }
       if (req.method === "GET" && assets.has(url.pathname)) {
         const [file, type] = assets.get(url.pathname);
         res.writeHead(200, { "Content-Type": type });
