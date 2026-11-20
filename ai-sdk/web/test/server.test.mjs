@@ -270,7 +270,7 @@ test("the managed widget loads only on its demo page without starting a session"
   const nonce = html.match(/nonce="([^"]+)"/)?.[1];
   assert.ok(nonce && nonce !== "WIDGET_STYLE_NONCE");
   assert.ok(response.headers.get("content-security-policy").includes("'nonce-" + nonce + "'"));
-  assert.match(html, /src="https:\/\/cdn\.pyai\.com\/widget\/v12\/pyai-widget\.js" data-widget="wdgt_[\w-]+"/);
+  assert.match(html, /src="https:\/\/cdn\.pyai\.com\/widget\/v12\.1\/pyai-widget\.js" data-widget="wdgt_[\w-]+"/);
   assert.deepEqual(f.calls, []);
   const home = await fetch(f.base);
   assert.doesNotMatch(await home.text(), /data-widget=/);

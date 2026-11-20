@@ -139,7 +139,7 @@ export function createVoiceServer({
         const template = await readFile(new URL("./public/managed-widget.html", import.meta.url), "utf8");
         res.writeHead(200, {
           "Content-Type": "text/html; charset=utf-8",
-          "Content-Security-Policy": `default-src 'none'; script-src https://cdn.pyai.com/widget/v12/pyai-widget.js; style-src 'self' 'nonce-${nonce}'; connect-src https://api.pyai.com wss://api.pyai.com; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`,
+          "Content-Security-Policy": `default-src 'none'; script-src https://cdn.pyai.com/widget/v12.1/pyai-widget.js; style-src 'self' 'nonce-${nonce}'; connect-src https://api.pyai.com wss://api.pyai.com; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`,
         });
         res.end(template.replace("WIDGET_STYLE_NONCE", nonce));
         return;
