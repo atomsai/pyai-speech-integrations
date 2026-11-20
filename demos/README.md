@@ -12,7 +12,7 @@ not an unauthenticated public interface. Never put keys in a browser or Git.
 
 ### Add a voice assistant to a website
 
-[Open the managed website widget](https://pyai-voice-demo-wfls74alya-uc.a.run.app/managed-widget). The visitor can open the launcher without a phone number. The test project allows one voice session per UTC day across all visitors. When the visitor starts, microphone audio goes to PyAI.
+[Open the managed website widget](https://pyai-voice-demo-wfls74alya-uc.a.run.app/managed-widget). The visitor can open the launcher without a phone number. The demo enforces a shared daily session limit and a per-IP limit. Both reset at 00:00 UTC. When the visitor starts, microphone audio goes to PyAI.
 
 A coding agent should verify its project with `whoami`, create or reuse a saved agent, and call `draft_website_widget` with the exact HTTPS website origin and both daily session limits. Show the result of `preview_website_widget` to the site owner. After approval, send that revision to `publish_website_widget` and embed the returned snippet. The browser receives a public widget ID. Read the [managed widget guide](https://docs.pyai.com/guides/website-voice-widget) for the full flow.
 
