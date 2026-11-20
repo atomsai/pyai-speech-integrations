@@ -261,3 +261,18 @@ test('public pilot issues secure visitor identity and fails closed on exhausted 
  await f.post('/api/event',{event:'signup_clicked'});await f.post('/api/event',{event:'signup_clicked'});
  assert.equal(events.filter(e=>e.event==='signup_clicked').length,1);
 });
+
+test("the managed widget loads only on its demo page without starting a session", async (t) => {
+  const f = await fixture(t);
+  const response = await fetch(f.base + "/managed-widget");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const nonce = html.match(/nonce="([^"]+)"/)?.[1];
+  assert.ok(nonce && nonce !== "WIDGET_STYLE_NONCE");
+  assert.ok(response.headers.get("content-security-policy").includes("'nonce-" + nonce + "'"));
+  assert.match(html, /src="https:\/\/cdn\.pyai\.com\/widget\/v12\/pyai-widget\.js" data-widget="wdgt_[\w-]+"/);
+  assert.deepEqual(f.calls, []);
+  const home = await fetch(f.base);
+  assert.doesNotMatch(await home.text(), /data-widget=/);
+  assert.doesNotMatch(home.headers.get("content-security-policy"), /cdn\.pyai\.com/);
+});
