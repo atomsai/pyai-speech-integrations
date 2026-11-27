@@ -5,6 +5,8 @@ and plays Speak audio. It also accepts typed questions. The default answer engin
 an explicitly labelled scripted product guide; optional AI SDK LLM mode is available.
 No API keys, customer audio or transcripts are written to the event log.
 
+For a live, interruptible browser conversation, see the [managed widget walkthrough and measured result](MANAGED-WIDGET.md).
+
 ## Run
 
 Requires Node 22+. From `ai-sdk`:
