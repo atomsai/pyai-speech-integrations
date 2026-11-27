@@ -44,3 +44,16 @@ The timer started with an empty site directory. The PyAI test account, fictional
 The first public page loaded after **5 min 7 s**. The first managed conversation answered the product question, accepted a spoken interruption and wrote one receipt after **6 min 50 s** from the original start. A transcription of the mixed browser speaker and synthetic microphone recording contains “Lantern Desk sends reminder messages,” followed by “Wait, stop” and “Four people are on your team.” The browser stopped 27 scheduled audio buffers **300 ms** after the interrupting clip began. At that instant, up to **2,003 ms** of audio remained queued. These are browser audio-graph measurements from one run.
 
 The original webhook persisted the record but returned only `saved: true`. The assistant correctly reported uncertainty. A fresh storage read confirmed a single four-person reminder enquiry. We changed the response to include `success: true` only after verifying the expected receipt. A missing or mismatched receipt still fails closed. Each run uses synthetic US-English visitor audio, Chromium in Google Cloud us-central1 and the widget's public v12.1 script. Neither a carrier nor a customer record is involved.
+
+### Corrected run and recordings
+
+From the same empty-site start, the first spoken product answer began at **6 min 36 s**. The first complete journey with a verified write **and a spoken success** finished at **13 min 35 s**, including the failed acknowledgement, diagnosis, code change, deployment and fresh test. The corrected browser run itself took **29.1 s** from launch to completed playback.
+
+| Synthetic session | What played | What the backend stored |
+| --- | --- | --- |
+| Initial | “Lantern Desk sends reminder messages.” After “Wait, stop,” the agent answered “Four people are on your team.” It later said it couldn't confirm the action. | One four-person reminder enquiry, receipt prefix `e9b74227`. |
+| Corrected | The visitor interrupted the opening product reply. The agent answered “Four people are on your team,” then said “Your synthetic inquiry has been saved.” | One new four-person reminder enquiry, receipt prefix `7a9fb033`. The write preceded the success response. |
+
+In the corrected run, the browser cancelled queued output **250 ms** after the spoken interruption began, with up to **1,994 ms** of playback remaining. Both recordings capture synthetic microphone input mixed with the widget's speaker output. The results file distinguishes the agent's full generated text from the words captured before interruption. This two-session test used profile-supplied facts, one voice and one region. Timing includes a prepared test account and widget. It does not measure new-account signup, indexed-document retrieval or a general latency percentile.
+
+[Listen to the corrected session](https://raw.githubusercontent.com/atomsai/pyai-speech-integrations/main/ai-sdk/web/evidence/managed-widget/verified-run.webm) · [Listen to the initial session](https://raw.githubusercontent.com/atomsai/pyai-speech-integrations/main/ai-sdk/web/evidence/managed-widget/first-run.webm) · [Measurements and transcripts](evidence/managed-widget/results.json)
