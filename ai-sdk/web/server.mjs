@@ -146,7 +146,10 @@ export function createVoiceServer({
             args?.confirmed !== true || args?.team_size !== 4 || args?.needs_reminders !== true) return send(res, 422, { error: "Only a confirmed fictional four-person reminder enquiry can be saved" });
         const receipt = createHash("sha256").update(enquiryAgentId + "/" + input.call_id).digest("hex").slice(0,32);
         const result = await storage.saveEnquiry(receipt);
-        return send(res, 200, result);
+        if (result?.saved !== true || result.receipt !== receipt) {
+          return send(res, 503, { error: "Could not verify the stored enquiry" });
+        }
+        return send(res, 200, { ...result, success: true });
       }
       if (req.method === "GET" && ["/managed-widget", "/managed-widget/start"].includes(url.pathname)) {
         const nonce = randomBytes(18).toString("base64");

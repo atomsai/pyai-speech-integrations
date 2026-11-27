@@ -295,6 +295,17 @@ test("managed demo saves only an authenticated, confirmed fictional enquiry", as
   assert.equal(writes.length,0);
   const result=await post(path,payload,headers);
   assert.equal(result.status,200);
-  assert.equal((await result.json()).receipt,writes[0]);
+  assert.deepEqual(await result.json(), {saved:true, receipt:writes[0], success:true});
   assert.equal(writes.length,1);
+});
+
+test("managed demo withholds success when persistence cannot confirm the receipt", async t => {
+  const {post}=await fixture(t,{enquiryAgentId:"qa",
+    enquiryTokenHash:createHash("sha256").update("test-secret").digest("hex"),
+    storage:{saveEnquiry:async()=>({saved:true,receipt:"wrong"})}});
+  const r=await post("/api/managed-enquiry",{agent_id:"qa",tool:"save_lantern_demo_enquiry",
+    call_id:"known",arguments:{confirmed:true,team_size:4,needs_reminders:true}},
+    {"X-Lantern-Demo-Key":"test-secret"});
+  assert.equal(r.status,503);
+  assert.equal((await r.json()).success,undefined);
 });
