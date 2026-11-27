@@ -22,6 +22,19 @@ In the 20 November 2026 test, the public launcher loaded and the service issued 
 
 For a local recording that may be sent privately to PyAI, upload the WAV directly with multipart `POST /v1/transcription/jobs` after verifying the project, budget and retention terms. Set `output_script=latin` for Roman Hinglish. On mono recordings request `diarize=true` for speaker labels when available. For one speaker per stereo channel use `channel=true`. Read `result.words` and `result.segments` for timings. Check names, amounts and speaker turns against the recording. This hosted flow requires cloud processing. [Full Hindi and Hinglish call-transcription recipe and measured results](https://pyai.com/guides/hindi-call-transcription#transcription-results).
 
+#### How well did it recognize numbers and speakers?
+
+Two published recordings have usable evidence for different questions. Neither was recorded as a noisy 8 kHz mono call. The 8 kHz upload example above illustrates the API request.
+
+| Input and date | What we can score from the saved result | What the result shows |
+| --- | --- | --- |
+| One synthetic Hindi-English invoice, 28.4 seconds, 24 kHz mono, 0 dB active-speech SNR, 21 Oct 2026 | Two numeric fields in the published reference script | Quantity **24 → 24** (1/1 exact). Invoice **1,499 → 2,400** (0/1 exact). |
+| One 20.18-second, 16 kHz stereo fixture assembled from Hindi and English FLEURS clips, 17 Nov 2026 | Output structure with `channel=true` and `output_script=latin` | 62 words had start/end times, 23 segments were returned, and both channel IDs appeared. Timing accuracy and mono speaker assignment need separate reference annotations. |
+
+**Reproduce the numeric check offline.** Read the reference and returned invoice excerpts linked below. Match by field (quantity or invoice), convert Hindi number words and numerals to the same integer, and ignore thousands separators. Require exact value agreement. Count a missing value as wrong. Counting both fields gives one exact value out of two on this single invoice. It does not establish an accuracy rate for phone calls. [Original excerpts and test conditions](https://pyai.com/guides/hindi-call-transcription#transcription-results).
+
+**What an 8 kHz evaluation needs.** Pair each shareable, noisy mono Hindi-English call with its saved Hear result and a human-checked reference identifying the speaker and start/end of each turn, including overlap, plus the expected numeric fields. Record the sample rate, channel count, case selection and permission to publish results. Score exact numeric fields per type with counts. For speakers, map anonymous labels per call and report missed speech, false alarms and speaker-confusion time over total reference speaker time, with the overlap and collar policies stated. Count calls with missing speaker labels. The published examples above provide zero eligible calls for that speaker score.
+
 ### Build with Hear and Speak
 
 [Open the Hear + Speak voice demo](https://pyai-voice-demo-wfls74alya-uc.a.run.app/?source=direct).
