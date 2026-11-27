@@ -1,4 +1,5 @@
 import test from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -275,4 +276,25 @@ test("the managed widget loads only on its demo page without starting a session"
   const home = await fetch(f.base);
   assert.doesNotMatch(await home.text(), /data-widget=/);
   assert.doesNotMatch(home.headers.get("content-security-policy"), /cdn\.pyai\.com/);
+});
+
+test("managed demo saves only an authenticated, confirmed fictional enquiry", async t => {
+  const writes = [];
+  const key = "test-credential";
+  const {post} = await fixture(t, {
+    enquiryTokenHash: createHash("sha256").update(key).digest("hex"),
+    enquiryAgentId: "qa",
+    storage: {saveEnquiry: async receipt => { writes.push(receipt); return {saved: true, receipt}; }},
+  });
+  const payload = {agent_id:"qa", tool:"save_lantern_demo_enquiry", call_id:"call1",
+    arguments:{team_size:4, needs_reminders:true, confirmed:true}};
+  const path="/api/managed-enquiry", headers={"X-Lantern-Demo-Key":key};
+  assert.equal((await post(path,payload)).status,401);
+  assert.equal((await post(path,{...payload,agent_id:"other"},headers)).status,422);
+  assert.equal((await post(path,{...payload,arguments:{...payload.arguments,confirmed:false}},headers)).status,422);
+  assert.equal(writes.length,0);
+  const result=await post(path,payload,headers);
+  assert.equal(result.status,200);
+  assert.equal((await result.json()).receipt,writes[0]);
+  assert.equal(writes.length,1);
 });

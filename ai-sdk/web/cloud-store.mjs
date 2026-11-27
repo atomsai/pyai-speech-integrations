@@ -50,6 +50,17 @@ export function createCloudStore({ bucket, fetch: request = fetch, token } = {})
       if (d.turns.length >= limit || (d.visitors[visitor] || 0) >= 3) return false;
       d.turns.push(turn); d.visitors[visitor] = (d.visitors[visitor] || 0) + 1; return true;
     }),
+    async saveEnquiry(receipt) {
+      const result = { receipt, team_size: 4, needs_reminders: true, saved: true };
+      const key = `managed-enquiries/${receipt}.json`;
+      const response = await write(key, result);
+      if (response.ok) return result;
+      if (response.status === 412) {
+        const previous = await read(key);
+        if (previous.data.receipt === receipt) return previous.data;
+      }
+      throw new Error('Demo enquiry storage unavailable');
+    },
     async event(row) {
       const r = await write(`events/${row.at.slice(0, 10)}/${randomUUID()}.json`, row);
       if (!r.ok) throw new Error('Event storage unavailable');
