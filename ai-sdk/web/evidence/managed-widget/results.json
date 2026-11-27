@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-27",
+  "site_initially_empty": true,
+  "timing_start_utc": "2026-11-27T11:55:34.486021+00:00",
+  "seconds_to_new_page": 306.72,
+  "prerequisites": "Existing verified QA agent, published widget, managed demo origin, test profile; existing agent initially has no tools.",
+  "region": "us-central1",
+  "browser": "Chromium, Playwright 1.58.2",
+  "widget_runtime": "v12.1",
+  "input": "three prerecorded synthetic English visitor turns; no physical microphone",
+  "carrier_calls": 0,
+  "runs": [
+    {
+      "run": "initial",
+      "started_utc": "2026-11-27T12:01:57.318Z",
+      "browser_complete_utc": "2026-11-27T12:02:28.889Z",
+      "seconds_from_empty_site_to_browser_complete": 414.4,
+      "seconds_in_browser": 31.57,
+      "seconds_from_empty_site_to_first_product_audio": 395.89,
+      "queued_playback_cancelled_after_ms": 300,
+      "remaining_queued_ms": 2003,
+      "new_synthetic_records": 1,
+      "receipt_prefix": "e9b74227",
+      "agent_turns": [
+        "Lantern Desk sends reminder messages to your team about upcoming appointments. It’s built for groups of up to ten users, so it can definitely help your four‑person team stay on top of scheduled meetings.",
+        "Four people are on your team.",
+        "I couldn't confirm that the requested action completed."
+      ],
+      "transcription_of_recorded_browser_mix": "What does Lantern Desk do? Can it help with appointment reminders? Lantern Desk sends reminder messages. Wait, stop. Tell me only how many people are on our team. Four people are on your team. Yes. Please save that synthetic inquiry now. Let me check that. I couldn't confirm that the requested action completed.",
+      "recording_sha256": "35f3a739a80bb578211c65fcdb0f4c22b9c2f7d7ce9a4908709e2e317b0dd977"
+    },
+    {
+      "run": "corrected",
+      "started_utc": "2026-11-27T12:08:40.480Z",
+      "browser_complete_utc": "2026-11-27T12:09:09.559Z",
+      "seconds_from_empty_site_to_browser_complete": 815.07,
+      "seconds_in_browser": 29.08,
+      "seconds_from_empty_site_to_first_product_audio": 798.87,
+      "queued_playback_cancelled_after_ms": 250,
+      "remaining_queued_ms": 1994,
+      "new_synthetic_records": 1,
+      "receipt_prefix": "7a9fb033",
+      "agent_turns": [
+        "Sure! Lantern Desk sends reminder messages to keep your team on track for upcoming appointments.",
+        "Four people are on your team.",
+        "Your synthetic inquiry has been saved."
+      ],
+      "transcription_of_recorded_browser_mix": "What does Lantern Desk do? Can it help with appointment reminders? Sure, Lantern Desk. Wait, stop. Tell me only how many people are on our team. Four people are on your team. Yes. Please save that synthetic inquiry now. Your synthetic inquiry has been saved.",
+      "recording_sha256": "fe1ccf1dfecbc8558df71abca0a8b596d73f42dcdf4da6fb0942043e4408c390"
+    }
+  ]
+}
