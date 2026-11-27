@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { readFile, appendFile, mkdir } from "node:fs/promises";
-import { randomBytes, timingSafeEqual, createHmac } from "node:crypto";
+import { randomBytes, timingSafeEqual, createHash, createHmac } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { createPyAIAudio } from "../audio.mjs";
@@ -46,6 +46,8 @@ export function createVoiceServer({
   publicDemo = false,
   sessionSecret,
   storage,
+  enquiryTokenHash,
+  enquiryAgentId,
   referralCode,
   origin = "http://localhost:3000",
   dataDir = "./.voice-data",
@@ -134,9 +136,21 @@ export function createVoiceServer({
     try {
       await ready;
       const url = new URL(req.url, expectedOrigin);
-      if (req.method === "GET" && url.pathname === "/managed-widget") {
+      if (req.method === "POST" && url.pathname === "/api/managed-enquiry") {
+        if (!storage?.saveEnquiry || !enquiryAgentId || !/^[a-f0-9]{64}$/.test(enquiryTokenHash || "")) return send(res, 503, { error: "Demo action unavailable" });
+        const supplied = req.headers["x-lantern-demo-key"];
+        if (typeof supplied !== "string" || !equal(createHash("sha256").update(supplied).digest("hex"), enquiryTokenHash)) return send(res, 401, { error: "Unauthorized" });
+        const input = JSON.parse((await body(req, 16384)).toString());
+        const args = input.arguments;
+        if (input.agent_id !== enquiryAgentId || input.tool !== "save_lantern_demo_enquiry" || !/^[a-zA-Z0-9_-]{1,128}$/.test(input.call_id || "") ||
+            args?.confirmed !== true || args?.team_size !== 4 || args?.needs_reminders !== true) return send(res, 422, { error: "Only a confirmed fictional four-person reminder enquiry can be saved" });
+        const receipt = createHash("sha256").update(enquiryAgentId + "/" + input.call_id).digest("hex").slice(0,32);
+        const result = await storage.saveEnquiry(receipt);
+        return send(res, 200, result);
+      }
+      if (req.method === "GET" && ["/managed-widget", "/managed-widget/start"].includes(url.pathname)) {
         const nonce = randomBytes(18).toString("base64");
-        const template = await readFile(new URL("./public/managed-widget.html", import.meta.url), "utf8");
+        const template = await readFile(new URL(url.pathname.endsWith("/start") ? "./public/managed-start.html" : "./public/managed-widget.html", import.meta.url), "utf8");
         res.writeHead(200, {
           "Content-Type": "text/html; charset=utf-8",
           "Content-Security-Policy": `default-src 'none'; script-src https://cdn.pyai.com/widget/v12.1/pyai-widget.js; style-src 'self' 'nonce-${nonce}'; connect-src https://api.pyai.com wss://api.pyai.com; frame-ancestors 'none'; base-uri 'none'; form-action 'none'`,
@@ -369,6 +383,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     publicDemo: process.env.PUBLIC_DEMO === "true",
     sessionSecret: process.env.SESSION_SECRET,
     referralCode: process.env.REFERRAL_CODE,
+    enquiryTokenHash: process.env.ENQUIRY_TOKEN_SHA256,
+    enquiryAgentId: process.env.ENQUIRY_AGENT_ID,
     storage: process.env.DEMO_BUCKET ? (await import("./cloud-store.mjs")).createCloudStore({ bucket: process.env.DEMO_BUCKET }) : undefined,
     origin,
     dataDir: process.env.DATA_DIR || "./.voice-data",

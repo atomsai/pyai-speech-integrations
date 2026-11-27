@@ -38,3 +38,9 @@ test('session starts are bounded; event objects never overwrite one another',asy
  await Promise.all([s.event({at:'2026-10-26T00:00:00Z',event:'one'}),s.event({at:'2026-10-26T00:00:00Z',event:'two'})]);
  assert.equal([...f.objects.keys()].filter(k=>k.startsWith('events/')).length,2);
 });
+test('a repeated managed action returns the same persisted enquiry',async()=>{
+ const f=fixture(),store=f.store();
+ const rows=await Promise.all([store.saveEnquiry('same'),store.saveEnquiry('same')]);
+ assert.deepEqual(rows[0],rows[1]);assert.equal(f.objects.size,1);
+ assert.deepEqual(f.objects.get('managed-enquiries/same.json').data,rows[0]);
+});
